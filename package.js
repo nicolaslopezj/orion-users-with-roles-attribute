@@ -1,7 +1,7 @@
 Package.describe({
   name: 'nicolaslopezj:orion-users-with-roles-attribute',
   summary: 'Users attribute with roles filter',
-  version: '1.0.0',
+  version: '1.0.1',
   git: 'https://github.com/nicolaslopezj/orion-users-with-roles-attribute'
 });
 

@@ -5,6 +5,8 @@ orion.attributes.registerAttribute('users-roles', {
     check(options.publicationName, String);
     check(options.roles, [String]);
 
+    var filter = {};
+
     if (Meteor.isServer) {
       Meteor.publishComposite(options.publicationName, {
         find: function() {
@@ -18,16 +20,22 @@ orion.attributes.registerAttribute('users-roles', {
       });
     }
 
+    var oldFilter = options.filter;
+    options.filter = function(userId) {
+      var usersIds = _.pluck(Roles._collection.find({ roles: { $in: options.roles } }).fetch(), 'userId');
+      var filters = [{ _id: { $in: usersIds } }];
+      if (oldFilter) {
+        filters.push(oldFilter(userId));
+      }
+      return { $and: filters };
+    }
+
     options = _.extend(options, {
       titleField: 'profile.name',
       pluralName: i18n('attributes.users.pluralName'),
       singularName: i18n('attributes.users.singularName'),
       collection: Meteor.users,
       customPublication: true,
-      filter: function() {
-        var usersIds = _.pluck(Roles._collection.find({ roles: { $in: options.roles } }).fetch(), 'userId');
-        return { _id: { $in: usersIds } };
-      },
       additionalFields: ['emails.address', 'roles'],
       render: {
         item: function(item, escape) {
