@@ -38,3 +38,21 @@ Groups.attachSchema(new SimpleSchema({
   })
 }));
 ```
+
+### Roles 2.0
+
+There is no need to use this package if you are using nicolaslopezj:roles@2.0, just use the users attribute.
+
+```js
+Groups.attachSchema(new SimpleSchema({
+  adminId: orion.attribute('user', {
+    label: 'Admin'
+  }, {
+    publicationName: 'anyUniqueStringHere',
+    additionalFields: ['roles'],
+    filter: function() {
+      return { roles: 'admin' }; // or { roles: { $in: ['admin', 'editor'] } }
+    }
+  })
+}));
+```
